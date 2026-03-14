@@ -220,9 +220,9 @@ document.querySelectorAll('.radio-button-wrap_ht, .rb_ht').forEach(element => {
     if (card) {
       const checkbox = card.querySelector('.rb_ht');
       if (checkbox) {
-        // Toggla se check stanje
-        checkbox.checked = !checkbox.checked; 
-        // Ovde šaljemo 'change' event ako ti je potreban za neki drugi listener
+        // Toggle the checked state
+        checkbox.checked = !checkbox.checked;
+        // Dispatching a 'change' event in case it is needed by another listener
         checkbox.dispatchEvent(new Event('change'));
       }
     }
