@@ -74,3 +74,23 @@ The core logic is currently embedded inline in Webflow. If you wish to move it t
 
 ### Updating Frequencies or Sounds
 To change the audio files, update the `ID`s of the HTML5 Audio elements in Webflow to match `audioPlayer1` through `audioPlayer12`.
+
+
+## 5. Audio Files
+
+The `hearing-test/sounds/` directory contains all the audio tones used in the test. These files are currently loaded from the Webflow Assets panel for performance optimization, but they are included in this repository for completeness and future use.
+
+| Filename       | Description                               |
+|----------------|-------------------------------------------|
+| `250Hz L.mp3`  | 250 Hz tone for the left ear              |
+| `250Hz R.mp3`  | 250 Hz tone for the right ear             |
+| `500Hz L.mp3`  | 500 Hz tone for the left ear              |
+| `500Hz R.mp3`  | 500 Hz tone for the right ear             |
+| `1000Hz L.mp3` | 1000 Hz tone for the left ear             |
+| `1000Hz R.mp3` | 1000 Hz tone for the right ear            |
+| `2000Hz L.mp3` | 2000 Hz tone for the left ear             |
+| `2000Hz R.mp3` | 2000 Hz tone for the right ear            |
+| `4000Hz L.mp3` | 4000 Hz tone for the left ear             |
+| `4000Hz R.mp3` | 4000 Hz tone for the right ear            |
+| `8000Hz L.mp3` | 8000 Hz tone for the left ear             |
+| `8000Hz R.mp3` | 8000 Hz tone for the right ear            |
