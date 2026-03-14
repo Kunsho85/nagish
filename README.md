@@ -7,39 +7,44 @@ This repository contains the custom JavaScript code for the Nagish hearing test,
 ```
 nagish/
 ├── hearing-test/
-│   ├── hearing-test.js      # Core hearing test logic (audio, volume, results)
-│   └── inline-scripts.js    # UI card management and interaction handlers
+│   ├── hearing-test-logic.js # Core hearing test logic (audio, volume, results)
+│   ├── card-manager.js       # UI step/card management (GSAP)
+│   ├── calibration.js        # Volume calibration logic
+│   ├── mirror-click.js       # Mirror click interaction handler
+│   └── form-loader.js        # Form submission loader animation
 ├── .gitignore
-└── README.md
+├── README.md
+└── HEARING_TEST_DOCS.md
 ```
 
-## Scripts
+## Scripts Overview
 
-### `hearing-test/hearing-test.js`
+### `hearing-test/hearing-test-logic.js`
+The main script responsible for all audio playback, volume control, slider behavior, result calculation, and sending results to the backend.
 
-The main script responsible for all audio playback, volume control, slider behaviour, result calculation, and sending results to the backend. Previously hosted on Slater (`slater.app/3728/26937`).
+### `hearing-test/card-manager.js`
+Handles the multi-step UI transitions using GSAP. It manages the visibility and animations of the test cards.
 
-### `hearing-test/inline-scripts.js`
+### `hearing-test/calibration.js`
+Ensures the user's audio is correctly calibrated before starting the actual test.
 
-Handles the multi-step card UI, checkbox interactions, calibration button logic, mirror click effect, and form load animation. These scripts are embedded inline in the Webflow page custom code and are stored here for version control purposes only.
+### `hearing-test/mirror-click.js` & `hearing-test/form-loader.js`
+Utility scripts for specific UI interactions and loading states during form submission.
 
 ## Integration in Webflow
 
-The `hearing-test.js` script is loaded via jsDelivr CDN. Add the following tag to the **Hearing Test page custom code** (before `</body>`), replacing the old Slater loader:
+The scripts are currently embedded **inline** in the Webflow project for performance. This repository serves as a version-controlled backup and a reference for developers.
+
+To load these scripts externally via jsDelivr CDN, use the following tags:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/Kunsho85/nagish/hearing-test/hearing-test.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Kunsho85/nagish/hearing-test/hearing-test-logic.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Kunsho85/nagish/hearing-test/card-manager.js"></script>
+<!-- Add other scripts as needed -->
 ```
 
-Remove the old Slater script tag:
+## Security Audit
+A basic security audit has been performed on these scripts. No sensitive data (API keys, secrets, or credentials) were found hardcoded in the JavaScript files. The backend communication is handled via a secure webhook endpoint.
 
-```html
-<!-- REMOVE THIS -->
-<script>document.addEventListener("DOMContentLoaded", function() { ... loadhearingtestsound ... })</script>
-```
-
-The `inline-scripts.js` content remains embedded directly in the Webflow page custom code and does not need to be loaded externally.
-
-## How It Was Built
-
-The hearing test is a fully custom JavaScript implementation embedded in a Webflow project. It uses pre-recorded audio files hosted in Webflow Assets, custom range sliders, a canvas-based audiogram, and a multi-step card UI controlled by custom JS. Results are sent to a backend endpoint and the audiogram is rendered as a PNG for email delivery.
+## Documentation
+For a detailed technical breakdown of how the system works, please refer to [HEARING_TEST_DOCS.md](./HEARING_TEST_DOCS.md).
