@@ -12,27 +12,90 @@ The hearing test is composed of several key modules:
 
 ---
 
-## 2. Core Modules
+## 2. HTML Structure & JS Targets Mapping
 
-### 2.1 Card Manager (`CardManager` Class)
+This section details the exact HTML classes, IDs, and custom attributes that the JavaScript logic relies on. When rebuilding the layout, these targets **must** be preserved for the test to function correctly.
+
+### 2.1 Card System & Navigation (`card-manager.js`)
+The UI is divided into 10 "cards" (Steps 0-9). The `CardManager` handles transitions between them.
+
+**Card Containers:**
+- `[sk-target="card-0"]` to `[sk-target="card-9"]`: These attributes must be placed on the main wrapper of each step.
+- `.is-gsap`: Add this class to elements inside a card that should animate (slide in/out) during transitions.
+
+**Navigation Buttons:**
+- `[sk-action="next:click"]`: Triggers the transition to the next card.
+- `[sk-action="previous:click"]`: Triggers the transition to the previous card.
+- `.inactive`: Class toggled by JS to disable/enable the "Next" button based on form validation.
+
+### 2.2 Audio Players & Volume Controls (`hearing-test-logic.js`)
+The test uses 12 audio players (6 frequencies for each ear).
+
+**Audio Elements:**
+- `<audio id="audioPlayer1">` to `<audio id="audioPlayer12">`: The HTML5 audio elements.
+  - 1-6: Left Ear (250Hz, 500Hz, 1000Hz, 2000Hz, 4000Hz, 8000Hz)
+  - 7-12: Right Ear (250Hz, 500Hz, 1000Hz, 2000Hz, 4000Hz, 8000Hz)
+
+**Volume Sliders (Range Inputs):**
+- `id="volume250L"`, `id="volume500L"`, ..., `id="volume8000L"`: Left ear sliders.
+- `id="volume250R"`, `id="volume500R"`, ..., `id="volume8000R"`: Right ear sliders.
+- `.range-slider_ht`: Class used for styling the sliders.
+
+**Volume Buttons (Up/Down):**
+- `id="Lvol250d"`, `id="Lvol250u"`, etc.: Down/Up buttons for Left ear.
+- `id="Rvol250d"`, `id="Rvol250u"`, etc.: Down/Up buttons for Right ear.
+
+**Volume Value Displays:**
+- `id="volumeValue1"` to `id="volumeValue12"`: Elements displaying the current volume percentage.
+
+### 2.3 Pre-Test Questionnaire & Validation
+The JS validates that users have answered questions before allowing them to proceed.
+
+**Questionnaire Form:**
+- `id="pre-test-questions"`: The form containing the initial 4 questions.
+- `name="struggle-to-hear"`, `name="miss-hearing"`, `name="transcript-benefit"`, `name="hard-to-follow"`: Radio button groups.
+
+**Setup Checkboxes:**
+- `id="im-in-a-quiet-place"`: Checkbox for Card 2.
+- `id="headphones-on"`: Checkbox for Card 3.
+- `id="sound-comfortable"`: Checkbox for Card 4.
+- `.rb_ht` and `.radio-button-wrap_ht`: Classes used for custom radio/checkbox click handling.
+
+### 2.4 Calibration & Quick Volume Check (`calibration.js`)
+- `id="audioPlayer"`: The audio element for the calibration sound (frog sound).
+- `id="playPauseButton"`: The button to play/pause the calibration sound.
+- `.play_icon` / `.pause_icon`: Icons toggled during playback.
+- `[sk-target="calibration-button"]`: Triggers the calibration logic.
+- `[sk="go"]`: The "Next" button on the calibration card, enabled after checking.
+
+### 2.5 Results & Submission
+- `id="showValues"`: Button that triggers the calculation of results.
+- `[db-result-title]`: Target for injecting the result heading (e.g., "Mild Hearing Loss").
+- `[db-result-copy]`: Target for injecting the result description.
+- `id="name"`, `id="email"`: Input fields for user details.
+- `id="submit-ht"`: The final submit button that sends data to the webhook.
+- `[load]`: Attribute on the submit button to trigger the loader.
+- `.loader-small`: The loader element that gets the `.is-active` class on submission.
+- `id="myCanvas"`: The canvas element used for drawing the audiogram (currently hidden/base64 encoded).
+
+---
+
+## 3. Core Modules
+
+### 3.1 Card Manager (`CardManager` Class)
 The UI is structured as a series of "cards" (Steps 0-9). The `CardManager` handles:
 - **Transitions**: Uses GSAP to animate cards in and out with a sliding effect.
 - **Validation**: Checks if questions are answered or checkboxes are ticked before enabling the "Next" button.
 - **State Management**: Tracks the current step and manages the visibility of elements.
 
-**Key Attributes:**
-- `sk-target="card-X"`: Identifies a specific step card.
-- `sk-action="next:click"`: Triggers the transition to the next card.
-- `.is-gsap`: Elements within a card that animate during transitions.
-
-### 2.2 Audio Engine
+### 3.2 Audio Engine
 The test uses 12 audio players (6 frequencies for each ear: 250Hz, 500Hz, 1000Hz, 2000Hz, 4000Hz, 8000Hz).
 
 - **Volume Control**: Users adjust volume in steps of `0.0625` (6.25%).
 - **Calibration**: A dedicated "Frog Sound" test ensures the user's volume is set correctly before starting.
 - **Playback Logic**: Only one frequency plays at a time. When a volume slider is adjusted, the corresponding frequency plays automatically.
 
-### 2.3 Result Calculation
+### 3.3 Result Calculation
 Results are calculated based on the average volume threshold across all frequencies.
 - **Groups**:
     - **Group 1 (<= 15dB loss)**: No Hearing Loss.
@@ -42,27 +105,19 @@ Results are calculated based on the average volume threshold across all frequenc
 
 ---
 
-## 3. Integration Details
+## 4. Integration Details
 
-### 3.1 Webflow Custom Attributes
-The script relies on specific attributes set within the Webflow Designer:
-- `[sk-target="card-X"]`: Card containers.
-- `[sk-action="next:click"]`: Next buttons.
-- `[db-result-title]`: Target for the result heading.
-- `[db-result-copy]`: Target for the result description.
-- `[load]`: Triggers the small loader animation on form submission.
-
-### 3.2 External Dependencies
+### 4.1 External Dependencies
 - **GSAP (3.12.2)**: Core animation engine.
 - **ScrollToPlugin**: Used for smooth scrolling interactions.
 
-### 3.3 Backend Communication
+### 4.2 Backend Communication
 - **Endpoint**: `https://ht.nagish.io/webhook`
 - **Payload**: Includes user name, email, pre-test answers, frequency results, and a Base64 PNG of the audiogram canvas.
 
 ---
 
-## 4. Maintenance Notes
+## 5. Maintenance Notes
 
 ### Switching to GitHub Hosting
 The core logic is currently embedded inline in Webflow. If you wish to move it to an external file:
@@ -75,8 +130,7 @@ The core logic is currently embedded inline in Webflow. If you wish to move it t
 ### Updating Frequencies or Sounds
 To change the audio files, update the `ID`s of the HTML5 Audio elements in Webflow to match `audioPlayer1` through `audioPlayer12`.
 
-
-## 5. Audio Files
+## 6. Audio Files
 
 The `hearing-test/sounds/` directory contains all the audio tones used in the test. These files are currently loaded from the Webflow Assets panel for performance optimization, but they are included in this repository for completeness and future use.
 
